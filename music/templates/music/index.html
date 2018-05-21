@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block  content %}
+
+  <div class="jumbotron">
+   <div class="d-flex flex-row flex-wrap"> {#tutaj jest mój div #}
+        {% for album in all_albums %}
+
+  {#           POCZĄTEK KARTY / ITEM #}
+          <div class="card m-2">
+                <img class="img-fluid m-1" src="{{album.album_logo.url}}" alt="Card image cap" >
+                  <div class="card-body">
+                    <h3 class="card-title">{{album.album_title}}</h3>
+                    <h4 class="card-text">{{ album.artist }}</h4>
+                    <a href="{% url 'music:detail' album.id %}" class="btn btn-primary mt-2">View Details</a>
+                    {% if user.is_authenticated and user == album.author%}
+                      <form  action="{% url 'music:album-delete' album.id %}" method="POST" style="display:inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-default mt-2">
+                          <span class="fas fa-trash-alt"></span>
+                        </button>
+                      </form>
+                    {% endif %}
+                    
+                    <a href="#" class="btn btn-default mt-2">
+                      <span class="fas fa-star {% if album.is_favorite %} text-warning{% endif %}"></span>
+                    </a>
+                  </div>
+              </div>
+  {#           KONIEC KARTY  #}
+        {% empty %}
+          <h3>You don't have any albums.</h3>
+        {% endfor %}
+
+   </div>
+  </div>
+
+{% endblock  %}

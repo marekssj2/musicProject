@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block  content %}
+  <div class="jumbotron">
+    <div class="row justify-content-between">
+      <div class="col-12 col-md-4 img-thumbnail p-md-3  img-thumbnail">
+        <img class="img-fluid " src="{{album.album_logo.url}}" width="300px" height="300px">
+
+        <h1>{{ album.album_title }}</h1>
+        <h3>{{ album.artist }}</h3>
+
+      </div>
+
+      <div class="col-12 col-md-8 pl-md-5 mt-2">
+        <div class="row ">
+         
+          {% if user.is_authenticated and user == album.author%}
+          <a class="btn btn-primary mr-md-2" href="{% url 'music:music-create' album.id %}" role="button" role="button">Add New Song</a>
+          {% endif %}
+
+        </div>
+        <div class="row thumbnail mt-2">
+          <div class="col">
+            <h4>All Songs</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Title</th>
+                  <th scope="col">AudioFile</th>
+                  <th scope="col">Favorite</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for song in album.song_set.all %}
+                <tr>
+                  <th scope="row">{{song.song_title}}</th>
+                  <td>{{song.file_type}}</td>
+                  <td>
+                  {% if user.is_authenticated and song.is_favorite %}
+                      <span class="fas fa-star text-warning"></span>
+                  {% endif %}</td>
+                  <td>
+                      <audio>
+                          <source id="source" src='{{song.audio_file.url }}' type='audio/wav' />
+                      </audio>
+                      
+                      <a class="ml-2 audioPlayer" src='{{song.audio_file.url}}' href="#">
+                        <span class="fas fa-play text-primary playIcon">
+                        </span>
+                      </a>
+
+                      <a id="audioPlayer" class="ml-2" href='{{song.audio_file.url}}' href="#">
+                        <span id="playIcon" class="fas fa-play text-primary">
+                        </span>
+                      </a>
+
+                      <!-- <a id="audioPlayer" class="btn btn-default" src='{{song.audio_file.url }}'>
+                          <span class="fas fa-play {% if album.is_favorite %} text-primary{% endif %}"></span>
+                        </a> -->
+
+                    {% if user.is_authenticated and user == album.author%}
+                      <a class="ml-2" href="{% url 'music:music-delete' song.id %}">
+                        <span class="fas fa-trash text-danger">
+                        </span>
+                      </a>
+                    {% endif %}
+
+                  </td>
+
+                {% endfor %}
+              </tbody>
+            </table>
+
+
+
+
+
+          </div>
+
+        </div>
+
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+{% endblock %}
